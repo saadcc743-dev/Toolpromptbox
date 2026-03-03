@@ -1,4 +1,4 @@
-const JSON_URL = 'YOUR_GITHUB_RAW_JSON_URL_HERE';
+const JSON_URL = 'https://saadcc743-dev.github.io/Toolpromptbox/prompts.json';
 
 async function generatePrompt(promptId, displayId, copyBtnId) {
     const display = document.getElementById(displayId);

@@ -1,45 +1,48 @@
-const JSON_URL = 'https://saadcc743-dev.github.io/Toolpromptbox/prompts.json';
+// Ensure this URL points to your actual JSON file on GitHub
+const LIBRARY_URL = 'https://saadcc743-dev.github.io/Toolpromptbox/prompts.json';
 
-async function generatePrompt(promptId, displayId, copyBtnId) {
+async function generatePrompt(promptKey, displayId, copyBtnId) {
     const display = document.getElementById(displayId);
     const copyBtn = document.getElementById(copyBtnId);
     
     display.textContent = "Connecting to library...";
-    
-    try {
-        const response = await fetch(JSON_URL);
-        const data = await response.json();
-        const fullText = data[promptId];
+    copyBtn.disabled = true;
 
-        if (!fullText) {
-            display.textContent = "Error: Prompt ID not found.";
+    try {
+        const response = await fetch(LIBRARY_URL);
+        const data = await response.json();
+        const textToType = data[promptKey];
+
+        if (!textToType) {
+            display.textContent = "Error: ID not found.";
             return;
         }
 
         display.textContent = "";
-        let currentPos = 0;
-        const totalDuration = 6000; // 6 seconds
-        const speed = totalDuration / fullText.length;
+        let i = 0;
+        // Total time is 6000ms (6 seconds)
+        const typingSpeed = 6000 / textToType.length;
 
-        const timer = setInterval(() => {
-            if (currentPos < fullText.length) {
-                display.textContent += fullText.charAt(currentPos);
-                currentPos++;
+        const typingInterval = setInterval(() => {
+            if (i < textToType.length) {
+                display.textContent += textToType.charAt(i);
+                i++;
             } else {
-                clearInterval(timer);
+                clearInterval(typingInterval);
                 copyBtn.disabled = false;
             }
-        }, speed);
+        }, typingSpeed);
 
     } catch (error) {
-        display.textContent = "Error loading library.";
+        display.textContent = "Error: Failed to load library.";
     }
 }
 
 function copyPrompt(displayId, btnId) {
     const text = document.getElementById(displayId).textContent;
+    const btn = document.getElementById(btnId);
+    
     navigator.clipboard.writeText(text).then(() => {
-        const btn = document.getElementById(btnId);
         const originalText = btn.textContent;
         btn.textContent = "Copied!";
         setTimeout(() => { btn.textContent = originalText; }, 2000);
